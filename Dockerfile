@@ -1,21 +1,20 @@
-# Utilisation de l'image Python officielle
-FROM python:3.10
+# Utilisation d'une image légère de Python
+FROM python:3.10-slim
 
-# Définition du dossier de travail
+# Définition du répertoire de travail
 WORKDIR /app
 
 # Copie des fichiers nécessaires
-COPY bot.py /app
-COPY requirements.txt /app
+COPY bot.py requirements.txt ./
 
 # Installation des dépendances
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Définition des variables d'environnement
-ENV TELEGRAM_TOKEN=""
+# Définition de la variable d’environnement pour Flask
+ENV PORT=8080
 
-# Exposition du port Flask
+# Exposition du port pour Cloud Run
 EXPOSE 8080
 
-# Commande pour exécuter le bot
-CMD ["python", "bot.py"]
+# Lancement du bot avec Gunicorn pour Flask
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "bot:app"]

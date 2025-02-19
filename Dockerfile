@@ -1,11 +1,21 @@
-FROM python:3.10-slim
+# Utilisation de l'image Python officielle
+FROM python:3.10
 
+# Définition du dossier de travail
 WORKDIR /app
 
-COPY . .
+# Copie des fichiers nécessaires
+COPY bot.py /app
+COPY requirements.txt /app
 
-RUN pip install --no-cache-dir flask pyTelegramBotAPI gunicorn
+# Installation des dépendances
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Définition des variables d'environnement
+ENV TELEGRAM_TOKEN=""
+
+# Exposition du port Flask
 EXPOSE 8080
 
-CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:8080", "bot:app"]
+# Commande pour exécuter le bot
+CMD ["python", "bot.py"]

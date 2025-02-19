@@ -1,10 +1,10 @@
-# Utilisation d'une image légère de Python
+# Utilisation d'une image Python légère
 FROM python:3.10-slim
 
 # Définition du répertoire de travail
 WORKDIR /app
 
-# Copie des fichiers nécessaires
+# Copier les fichiers du projet
 COPY bot.py requirements.txt ./
 
 # Installation des dépendances

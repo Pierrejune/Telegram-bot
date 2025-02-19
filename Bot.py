@@ -1,11 +1,10 @@
 import os
-import flask
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import logging
 
 # Configuration du logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Chargement du token de l'API Telegram
 TOKEN = os.getenv("TELEGRAM_TOKEN")
@@ -13,7 +12,6 @@ if not TOKEN:
     raise ValueError("❌ ERREUR : La variable d'environnement TELEGRAM_TOKEN est absente.")
 
 bot = telebot.TeleBot(TOKEN)
-app = flask.Flask(__name__)
 
 # Configuration de base
 test_mode = True
@@ -24,16 +22,6 @@ influencers_to_monitor = [
     "officialmcafee", "AkitaInu", "KishuToken", "Shibtoken", "dogecoinfoundatio"
 ]
 detected_tokens = {}
-
-# Webhook Telegram
-@app.route("/webhook", methods=["POST"])
-def webhook():
-    if flask.request.headers.get("content-type") == "application/json":
-        update = flask.request.get_json()
-        bot.process_new_updates([telebot.types.Update.de_json(update)])
-        return "OK", 200
-    else:
-        return flask.abort(403)
 
 # Commande /start
 @bot.message_handler(commands=["start"])
@@ -112,6 +100,7 @@ def check_influencer_activity(influencer):
 def is_rug_pull(token):
     return token not in detected_tokens
 
-# Lancer Flask
+# Lancer le bot en mode polling
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8080)))
+    logging.info("✅ Bot lancé en mode polling...")
+    bot.infinity_polling()

@@ -1,15 +1,14 @@
+# Utilisation d'une image Python légère
 FROM python:3.10-slim
 
+# Définition du répertoire de travail
 WORKDIR /app
 
-# Copier tout le projet
-COPY . .
+# Copier les fichiers du projet
+COPY bot.py requirements.txt ./
 
 # Installation des dépendances
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Exposition du port
-EXPOSE 8080
-
-# Lancement du bot
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "bot:app"]
+# Exécution du bot en mode polling
+CMD ["python", "bot.py"]
